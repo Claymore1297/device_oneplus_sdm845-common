@@ -16,7 +16,7 @@
 //
 
 android_app {
-    name: "DeviceParts",
+    name: "DeviceParts_op6",
     resource_dirs: ["res","deviceparts_res"],
     defaults: ["SettingsLibDefaults"],
     platform_apis: true,

@@ -102,7 +102,7 @@ PRODUCT_PACKAGES += \
 
 # DeviceParts
 PRODUCT_PACKAGES += \
-    DeviceParts
+    DeviceParts_op6
 
 # Display
 PRODUCT_PACKAGES += \
