@@ -20,31 +20,17 @@ package com.aicp.device
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.pm.ActivityInfo
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
-import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
-import android.os.Handler
-import android.os.Message
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
-import androidx.preference.PreferenceDialogFragment
-import androidx.preference.PreferenceViewHolder
 import com.android.settingslib.CustomDialogPreference
-import java.util.LinkedList
+import java.util.*
 
 class AppSelectListPreference : CustomDialogPreference {
     private var mAdapter: AppSelectListAdapter? = null
@@ -288,12 +274,6 @@ class AppSelectListPreference : CustomDialogPreference {
         return appIcon
     }
 
-  /*  object AppSelectListPreferenceDialogFragment : CustomDialogPreference.CustomPreferenceDialogFragment() {
-        fun newInstance(key: String?): CustomDialogPreference.CustomPreferenceDialogFragment {
-            return CustomDialogPreference.CustomPreferenceDialogFragment.newInstance(key)
-        }
-    }
-*/
     companion object {
         private const val TAG = "AppSelectListPreference"
         const val TORCH_ENTRY = "torch"

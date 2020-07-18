@@ -17,7 +17,6 @@
 */
 package com.aicp.device
 
-import android.content.ContentResolver
 import android.content.Context
 import android.os.Vibrator
 import android.provider.Settings

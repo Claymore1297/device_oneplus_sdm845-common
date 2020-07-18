@@ -18,8 +18,6 @@
 */
 package com.aicp.device
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.app.DialogFragment
 import android.content.ComponentName
 import android.content.Intent
@@ -27,27 +25,19 @@ import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
-import android.content.res.Resources
 import android.os.AsyncTask
 import android.os.Bundle
-import androidx.preference.PreferenceFragment
-import androidx.preference.ListPreference
+import android.os.UserHandle
+import android.provider.Settings
+import android.provider.Settings.Secure.SYSTEM_NAVIGATION_KEYS_ENABLED
+import android.util.Log
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
-import androidx.preference.PreferenceScreen
+import androidx.preference.PreferenceFragment
 import androidx.preference.TwoStatePreference
-import android.provider.Settings
-import android.text.TextUtils
-import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.ListView
-import android.util.Log
-import android.provider.Settings.Secure.SYSTEM_NAVIGATION_KEYS_ENABLED
-import android.os.UserHandle
-import java.util.Collections
-import java.util.LinkedList
+import java.util.*
+
+//import java.util.List
 
 class GestureSettings : PreferenceFragment(), Preference.OnPreferenceChangeListener {
     private var mMusicPlaybackGestureSwitch: TwoStatePreference? = null
@@ -241,6 +231,7 @@ class GestureSettings : PreferenceFragment(), Preference.OnPreferenceChangeListe
     }
 
     private inner class FetchPackageInformationTask : AsyncTask<Void?, Void?, Void?>() {
+
         override protected fun doInBackground(vararg params: Void?): Void? {
             loadInstalledPackages()
             return null

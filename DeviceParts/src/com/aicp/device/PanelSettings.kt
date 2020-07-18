@@ -18,31 +18,13 @@
 */
 package com.aicp.device
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.res.Resources
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.preference.PreferenceFragment
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
-import androidx.preference.PreferenceManager
-import androidx.preference.PreferenceScreen
-import androidx.preference.TwoStatePreference
 import android.provider.Settings
-import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.ListView
-import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.util.Log
+import androidx.preference.PreferenceFragment
 
 class PanelSettings : PreferenceFragment(), RadioGroup.OnCheckedChangeListener {
     private var mRadioGroup: RadioGroup? = null

@@ -18,16 +18,9 @@
 */
 package com.aicp.device
 
-import android.content.ContentResolver
 import android.content.Context
-import android.database.ContentObserver
-import android.os.Bundle
 import android.os.Vibrator
-import android.provider.Settings
 import android.util.AttributeSet
-import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.SeekBar
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder

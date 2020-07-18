@@ -18,11 +18,9 @@
 package com.aicp.device
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.provider.Settings
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
-import androidx.preference.PreferenceManager
 import com.aicp.device.Utils.fileWritable
 import com.aicp.device.Utils.getFileValueAsBoolean
 import com.aicp.device.Utils.writeValue

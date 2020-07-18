@@ -17,13 +17,10 @@
 */
 package com.aicp.device
 
-import android.content.ContentResolver
 import android.content.Context
-import android.util.AttributeSet
 import android.os.Vibrator
 import android.provider.Settings
-import com.aicp.device.VibratorSystemStrengthPreference.Companion.DEFAULT_VALUE
-import com.aicp.device.VibratorSystemStrengthPreference.Companion.FILE_LEVEL
+import android.util.AttributeSet
 
 class VibratorSystemStrengthPreference(context: Context, attrs: AttributeSet?) : VibratorStrengthPreference(context, attrs) {
     private val mMinValue = 116

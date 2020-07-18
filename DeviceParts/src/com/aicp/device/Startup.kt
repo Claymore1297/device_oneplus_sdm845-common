@@ -21,8 +21,6 @@ package com.aicp.device
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 import android.provider.Settings
 import android.text.TextUtils
 

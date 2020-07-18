@@ -19,11 +19,9 @@
 package com.aicp.device
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.provider.Settings
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
-import androidx.preference.PreferenceManager
 
 class HBMModeSwitch(context: Context) : OnPreferenceChangeListener {
     private val mContext: Context

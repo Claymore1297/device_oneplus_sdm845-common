@@ -1,6 +1,5 @@
 /*
 * Copyright (C) 2016 The OmniROM Project
-* Copyright (C) 2020 Android Ice Cold Project
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -19,11 +18,9 @@
 package com.aicp.device
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.provider.Settings
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
-import androidx.preference.PreferenceManager
 
 class SRGBModeSwitch(context: Context) : OnPreferenceChangeListener {
     private val mContext: Context

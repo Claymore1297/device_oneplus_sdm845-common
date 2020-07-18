@@ -19,7 +19,6 @@
 package com.aicp.device
 
 import android.annotation.TargetApi
-import android.content.Intent
 import android.content.SharedPreferences
 import android.service.quicksettings.TileService
 import androidx.preference.PreferenceManager
