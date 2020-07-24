@@ -55,7 +55,7 @@
     <string name="config_customKeyHandlerClass" translatable="false">com.aicp.device.KeyHandler</string>
 
     <!-- Paths to the library that contain device specific key handler -->
-    <string name="config_customKeyHandlerLib" translatable="false">/system/priv-app/DeviceParts/DeviceParts.apk</string>
+    <string name="config_customKeyHandlerLib" translatable="false">/system/priv-app/DeviceParts_op6/DeviceParts_op6.apk</string>
 
     <!-- Default list of files pinned by the Pinner Service -->
     <string-array translatable="false" name="config_defaultPinnerServiceFiles">
