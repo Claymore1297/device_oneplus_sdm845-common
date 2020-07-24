@@ -1,0 +1,7 @@
+-keep class com.aicp.device.*
+
+# Keep keyhandler constructor
+-keep public class * implements com.android.internal.util.aicp.CustomKeyHandler {
+   public <init>(android.content.Context);
+}
+

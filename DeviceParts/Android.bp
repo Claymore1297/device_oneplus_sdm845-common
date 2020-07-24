@@ -31,5 +31,8 @@ android_app {
         "androidx.preference_preference",
     ],
 
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
 }
 
