@@ -22,13 +22,17 @@ android_app {
     platform_apis: true,
     privileged: true,
     certificate: "platform",
-    product_specific: true,
+    manifest: "AndroidManifest.xml",
 
     srcs: ["src/**/*.kt"],
 
     static_libs: [
         "androidx.core_core",
         "androidx.preference_preference",
+    ],
+
+    libs: [
+       "telephony-common",
     ],
 
     optimize: {
