@@ -48,60 +48,51 @@ class Startup : BroadcastReceiver() {
                     "Settings.System." + com.aicp.device.KeyHandler.GESTURE_MUSIC_PLAYBACK_SETTINGS_VARIABLE_NAME, 0) === 1
             GestureSettings.setMusicPlaybackGestureEnabled(musicPlaybackEnabled)
 
-            // circle -> camera
-            var mapping: String = GestureSettings.DEVICE_GESTURE_MAPPING_1
-            var value: String = Settings.System.getString(context.getContentResolver(), mapping)
-            if (TextUtils.isEmpty(value)) {
-                value = AppSelectListPreference.CAMERA_ENTRY
-                Settings.System.putString(context.getContentResolver(), mapping, value)
-            }
-            var enabled = !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            // circle
+            var value: String = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_1)
+            var enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_CIRCLE_APP), enabled)
 
-            // down arrow -> flashlight
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_2
-            value = Settings.System.getString(context.getContentResolver(), mapping)
-            if (TextUtils.isEmpty(value)) {
-                value = AppSelectListPreference.TORCH_ENTRY
-                Settings.System.putString(context.getContentResolver(), mapping, value)
-            }
-            enabled = !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            // down arrow
+            value = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_2)
+            enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_DOWN_ARROW_APP), enabled)
 
             // down swipe
             value = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_6)
-            enabled = !TextUtils.isEmpty(value) && !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_DOWN_SWIPE_APP), enabled)
 
             // up swipe
             value = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_7)
-            enabled = !TextUtils.isEmpty(value) && !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_UP_SWIPE_APP), enabled)
 
             // left swipe
             value = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_8)
-            enabled = !TextUtils.isEmpty(value) && !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_LEFT_SWIPE_APP), enabled)
 
             // right swipe
             value = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_9)
-            enabled = !TextUtils.isEmpty(value) && !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_RIGHT_SWIPE_APP), enabled)
 
             // M Gesture
             value = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_3)
-            enabled = !TextUtils.isEmpty(value) && !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_M_GESTURE_APP), enabled)
 
             // S Gesture
             value = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_4)
-            enabled = !TextUtils.isEmpty(value) && !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_S_GESTURE_APP), enabled)
 
             // W Gesture
             value = Settings.System.getString(context.getContentResolver(), GestureSettings.DEVICE_GESTURE_MAPPING_5)
-            enabled = !TextUtils.isEmpty(value) && !value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_W_GESTURE_APP), enabled)
+
             enabled = Settings.System.getInt(context.getContentResolver(), SRGBModeSwitch.SETTINGS_KEY, 0) !== 0
             restore(SRGBModeSwitch.Companion.file, enabled)
             enabled = Settings.System.getInt(context.getContentResolver(), DCDModeSwitch.SETTINGS_KEY, 0) !== 0

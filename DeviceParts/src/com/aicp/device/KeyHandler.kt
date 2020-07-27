@@ -112,7 +112,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
             return false
         }
         val value = getGestureValueForScanCode(event.getScanCode())
-        return !TextUtils.isEmpty(value) && value == AppSelectListPreference.CAMERA_ENTRY
+        return !TextUtils.isEmpty(value) && value == GestureSettings.CAMERA_ENTRY
     }
 
     override fun isWakeEvent(event: KeyEvent): Boolean {
@@ -120,7 +120,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
             return false
         }
         val value = getGestureValueForScanCode(event.getScanCode())
-        if (!TextUtils.isEmpty(value) && value == AppSelectListPreference.WAKE_ENTRY) {
+        if (!TextUtils.isEmpty(value) && value == GestureSettings.WAKE_ENTRY) {
             if (DEBUG) Log.i(TAG, "isWakeEvent " + event.getScanCode().toString() + value)
             return true
         }
@@ -132,7 +132,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
             return null
         }
         val value = getGestureValueForScanCode(event.getScanCode())
-        if (!TextUtils.isEmpty(value) && value != AppSelectListPreference.DISABLED_ENTRY) {
+        if (!TextUtils.isEmpty(value) && value != GestureSettings.DISABLED_ENTRY) {
             if (DEBUG) Log.i(TAG, "isActivityLaunchEvent " + event.getScanCode().toString() + value)
             if (!launchSpecialActions(value)) {
                 AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
@@ -253,10 +253,10 @@ class KeyHandler(context: Context) : CustomKeyHandler {
             sendUpdateBroadcast(position, positionValue)
         }
         if (!mProxyIsNear && mUseSliderTorch && action < 4) {
-            launchSpecialActions(AppSelectListPreference.TORCH_ENTRY)
+            launchSpecialActions(GestureSettings.TORCH_ENTRY)
             mUseSliderTorch = false
         } else if (!mProxyIsNear && mUseSliderTorch) {
-            launchSpecialActions(AppSelectListPreference.TORCH_ENTRY)
+            launchSpecialActions(GestureSettings.TORCH_ENTRY)
         }
     }
 
@@ -287,13 +287,13 @@ class KeyHandler(context: Context) : CustomKeyHandler {
                 "Settings.System.$GESTURE_MUSIC_PLAYBACK_SETTINGS_VARIABLE_NAME", 0, UserHandle.USER_CURRENT) === 1
         /* handle music playback gesture if enabled */if (musicPlaybackEnabled) {
             when (value) {
-                AppSelectListPreference.MUSIC_PLAY_ENTRY -> {
+                GestureSettings.MUSIC_PLAY_ENTRY -> {
                     mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION)
                     AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
                     dispatchMediaKeyWithWakeLockToAudioService(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)
                     return true
                 }
-                AppSelectListPreference.MUSIC_NEXT_ENTRY -> {
+                GestureSettings.MUSIC_NEXT_ENTRY -> {
                     if (isMusicActive) {
                         mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION)
                         AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
@@ -301,7 +301,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
                     }
                     return true
                 }
-                AppSelectListPreference.MUSIC_PREV_ENTRY -> {
+                GestureSettings.MUSIC_PREV_ENTRY -> {
                     if (isMusicActive) {
                         mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION)
                         AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
@@ -311,7 +311,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
                 }
             }
         }
-        if (value == AppSelectListPreference.TORCH_ENTRY) {
+        if (value == GestureSettings.TORCH_ENTRY) {
             mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION)
             val service: IStatusBarService = statusBarService
             if (service != null) {
@@ -323,7 +323,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
                     // do nothing.
                 }
             }
-        } else if (value == AppSelectListPreference.AMBIENT_DISPLAY_ENTRY) {
+        } else if (value == GestureSettings.AMBIENT_DISPLAY_ENTRY) {
             AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
             launchDozePulse()
             return true
@@ -334,7 +334,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
     private fun getGestureValueForScanCode(scanCode: Int): String? {
         /* for the music playback gestures, just return the expected values */
         when (scanCode) {
-            GESTURE_II_SCANCODE -> return AppSelectListPreference.MUSIC_PLAY_ENTRY
+            GESTURE_II_SCANCODE -> return GestureSettings.MUSIC_PLAY_ENTRY
             GESTURE_CIRCLE_SCANCODE -> return Settings.System.getStringForUser(mContext.getContentResolver(),
                     GestureSettings.DEVICE_GESTURE_MAPPING_1, UserHandle.USER_CURRENT)
             GESTURE_V_SCANCODE -> return Settings.System.getStringForUser(mContext.getContentResolver(),
@@ -345,8 +345,8 @@ class KeyHandler(context: Context) : CustomKeyHandler {
                     GestureSettings.DEVICE_GESTURE_MAPPING_4, UserHandle.USER_CURRENT)
             GESTURE_W_SCANCODE -> return Settings.System.getStringForUser(mContext.getContentResolver(),
                     GestureSettings.DEVICE_GESTURE_MAPPING_5, UserHandle.USER_CURRENT)
-            GESTURE_LEFT_V_SCANCODE -> return AppSelectListPreference.MUSIC_PREV_ENTRY
-            GESTURE_RIGHT_V_SCANCODE -> return AppSelectListPreference.MUSIC_NEXT_ENTRY
+            GESTURE_LEFT_V_SCANCODE -> return GestureSettings.MUSIC_PREV_ENTRY
+            GESTURE_RIGHT_V_SCANCODE -> return GestureSettings.MUSIC_NEXT_ENTRY
             GESTURE_DOWN_SWIPE_SCANCODE -> return Settings.System.getStringForUser(mContext.getContentResolver(),
                     GestureSettings.DEVICE_GESTURE_MAPPING_6, UserHandle.USER_CURRENT)
             GESTURE_UP_SWIPE_SCANCODE -> return Settings.System.getStringForUser(mContext.getContentResolver(),

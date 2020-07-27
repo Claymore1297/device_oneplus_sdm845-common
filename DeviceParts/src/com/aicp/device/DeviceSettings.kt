@@ -52,7 +52,6 @@ class DeviceSettings : PreferenceFragment(), Preference.OnPreferenceChangeListen
         mSliderModeTop!!.setOnPreferenceChangeListener(this)
         val sliderModeTop = getSliderAction(0)
         var valueIndex: Int = mSliderModeTop!!.findIndexOfValue(sliderModeTop.toString())
-
         mSliderModeTop!!.setValueIndex(valueIndex)
         mSliderModeTop!!.setSummary(mSliderModeTop!!.getEntries().get(valueIndex))
         mSliderModeCenter = findPreference(KEY_SLIDER_MODE_CENTER) as ListPreference?

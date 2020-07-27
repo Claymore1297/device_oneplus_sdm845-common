@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (C) 2017 The OmniROM Project
+     Copyright (C) 2020 Android Ice Cold Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -32,50 +33,68 @@
     <PreferenceCategory
         android:title="@string/offscreen_gesture_title">
 
-        <com.aicp.device.AppSelectListPreference
+        <ListPreference
             android:key="circle_gesture_app"
             android:title="@string/category_circle_gesture"
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
             android:persistent="false" />
-
-        <com.aicp.device.AppSelectListPreference
+        <ListPreference
             android:key="gesture_m_app"
             android:title="@string/category_m_gesture"
-            android:persistent="false"/>
-
-        <com.aicp.device.AppSelectListPreference
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
+            android:persistent="false" />
+        <ListPreference
             android:key="gesture_s_app"
             android:title="@string/category_s_gesture"
-            android:persistent="false"/>
-
-        <com.aicp.device.AppSelectListPreference
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
+            android:persistent="false" />
+        <ListPreference
             android:key="gesture_w_app"
             android:title="@string/category_w_gesture"
-            android:persistent="false"/>
-
-        <com.aicp.device.AppSelectListPreference
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
+            android:persistent="false" />
+        <ListPreference
             android:key="down_arrow_gesture_app"
             android:title="@string/category_down_arrow_gesture"
-            android:persistent="false"/>
-
-        <com.aicp.device.AppSelectListPreference
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
+            android:persistent="false" />
+        <ListPreference
             android:key="down_swipe_gesture_app"
             android:title="@string/category_down_swipe_gesture"
-            android:persistent="false"/>
-
-        <com.aicp.device.AppSelectListPreference
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
+            android:persistent="false" />
+        <ListPreference
             android:key="up_swipe_gesture_app"
             android:title="@string/category_up_swipe_gesture"
-            android:persistent="false"/>
-
-        <com.aicp.device.AppSelectListPreference
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
+            android:persistent="false" />
+        <ListPreference
             android:key="left_swipe_gesture_app"
             android:title="@string/category_left_swipe_gesture"
-            android:persistent="false"/>
-
-        <com.aicp.device.AppSelectListPreference
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
+            android:persistent="false" />
+        <ListPreference
             android:key="right_swipe_gesture_app"
             android:title="@string/category_right_swipe_gesture"
-            android:persistent="false"/>
-
+            android:icon="@drawable/ic_gesture"
+            android:entries="@array/gestures_key_action_entries"
+            android:entryValues="@array/gestures_key_action_values"
+            android:persistent="false" />
     </PreferenceCategory>
 </PreferenceScreen>

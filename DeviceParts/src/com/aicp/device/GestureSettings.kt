@@ -18,53 +18,33 @@
 */
 package com.aicp.device
 
-import android.app.DialogFragment
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.ActivityInfo
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.UserHandle
 import android.provider.Settings
 import android.provider.Settings.Secure.SYSTEM_NAVIGATION_KEYS_ENABLED
 import android.util.Log
+import androidx.preference.ListPreference
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragment
 import androidx.preference.TwoStatePreference
 import java.util.*
 
-//import java.util.List
 
 class GestureSettings : PreferenceFragment(), Preference.OnPreferenceChangeListener {
     private var mMusicPlaybackGestureSwitch: TwoStatePreference? = null
     private var mOffscreenGestureFeedbackSwitch: TwoStatePreference? = null
-    private val mDoubleSwipeApp: AppSelectListPreference? = null
-    private var mCircleApp: AppSelectListPreference? = null
-    private var mDownArrowApp: AppSelectListPreference? = null
-    private var mMGestureApp: AppSelectListPreference? = null
-    private var mSGestureApp: AppSelectListPreference? = null
-    private var mWGestureApp: AppSelectListPreference? = null
-    private val mLeftArrowApp: AppSelectListPreference? = null
-    private val mRightArrowApp: AppSelectListPreference? = null
-    private var mDownSwipeApp: AppSelectListPreference? = null
-    private var mUpSwipeApp: AppSelectListPreference? = null
-    private var mLeftSwipeApp: AppSelectListPreference? = null
-    private var mRightSwipeApp: AppSelectListPreference? = null
-    private val mFPDownSwipeApp: AppSelectListPreference? = null
-    private val mFPUpSwipeApp: AppSelectListPreference? = null
-    private val mFPRightSwipeApp: AppSelectListPreference? = null
-    private val mFPLeftSwipeApp: AppSelectListPreference? = null
-    private val fpGestures: PreferenceCategory? = null
-    private val mInstalledPackages: MutableList<AppSelectListPreference.PackageItem> = LinkedList<AppSelectListPreference.PackageItem>()
-    private var mPm: PackageManager? = null
+    private var mCircleApp: ListPreference? = null
+    private var mDownArrowApp: ListPreference? = null
+    private var mUpSwipeApp: ListPreference? = null
+    private var mDownSwipeApp: ListPreference? = null
+    private var mLeftSwipeApp: ListPreference? = null
+    private var mRightSwipeApp: ListPreference? = null
+    private var mMGestureApp: ListPreference? = null
+    private var mSGestureApp: ListPreference? = null
+    private var mWGestureApp: ListPreference? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.gesture_settings, rootKey)
-        mPm = getContext().getPackageManager()
         mOffscreenGestureFeedbackSwitch = findPreference(KEY_OFF_SCREEN_GESTURE_FEEDBACK_SWITCH) as TwoStatePreference?
         mOffscreenGestureFeedbackSwitch!!.setChecked(Settings.System.getInt(getContext().getContentResolver(),
                 "Settings.System." + KeyHandler.GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, 1) !== 0)
@@ -74,52 +54,105 @@ class GestureSettings : PreferenceFragment(), Preference.OnPreferenceChangeListe
         val musicPlaybackEnabled = Settings.System.getIntForUser(getContext().getContentResolver(),
                 "Settings.System." + KeyHandler.GESTURE_MUSIC_PLAYBACK_SETTINGS_VARIABLE_NAME, 0, UserHandle.USER_CURRENT) === 1
         setMusicPlaybackGestureEnabled(musicPlaybackEnabled)
-        mCircleApp = findPreference(KEY_CIRCLE_APP) as AppSelectListPreference?
-        mCircleApp!!.setEnabled(isGestureSupported(KEY_CIRCLE_APP))
-        var value: String = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_1)
-        mCircleApp!!.value = value
-        mCircleApp?.setOnPreferenceChangeListener(this)
-        mDownArrowApp = findPreference(KEY_DOWN_ARROW_APP) as AppSelectListPreference?
-        mDownArrowApp!!.setEnabled(isGestureSupported(KEY_DOWN_ARROW_APP))
-        value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_2)
-        mDownArrowApp!!.value = value
+
+        mCircleApp = findPreference(KEY_CIRCLE_APP) as ListPreference?
+        mCircleApp!!.setOnPreferenceChangeListener(this)
+        var mapping: String = GestureSettings.DEVICE_GESTURE_MAPPING_1
+        var value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        var valueIndex: Int = mCircleApp!!.findIndexOfValue(value)
+        mCircleApp!!.setValueIndex(valueIndex)
+        mCircleApp!!.setSummary(mCircleApp!!.getEntries().get(valueIndex))
+
+        mDownArrowApp = findPreference(KEY_DOWN_ARROW_APP) as ListPreference?
         mDownArrowApp!!.setOnPreferenceChangeListener(this)
-        mMGestureApp = findPreference(KEY_M_GESTURE_APP) as AppSelectListPreference?
-        mMGestureApp!!.setEnabled(isGestureSupported(KEY_M_GESTURE_APP))
-        value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_3)
-        mMGestureApp!!.value = value
+        mapping = GestureSettings.DEVICE_GESTURE_MAPPING_2
+        value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        valueIndex = mDownArrowApp!!.findIndexOfValue(value)
+        mDownArrowApp!!.setValueIndex(valueIndex)
+        mDownArrowApp!!.setSummary(mDownArrowApp!!.getEntries().get(valueIndex))
+
+        mMGestureApp = findPreference(KEY_M_GESTURE_APP) as ListPreference?
         mMGestureApp!!.setOnPreferenceChangeListener(this)
-        mSGestureApp = findPreference(KEY_S_GESTURE_APP) as AppSelectListPreference?
-        mSGestureApp!!.setEnabled(isGestureSupported(KEY_S_GESTURE_APP))
-        value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_4)
-        mSGestureApp!!.value = value
+        mapping = GestureSettings.DEVICE_GESTURE_MAPPING_3
+        value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        valueIndex = mMGestureApp!!.findIndexOfValue(value)
+        mMGestureApp!!.setValueIndex(valueIndex)
+        mMGestureApp!!.setSummary(mMGestureApp!!.getEntries().get(valueIndex))
+
+        mSGestureApp = findPreference(KEY_S_GESTURE_APP) as ListPreference?
         mSGestureApp!!.setOnPreferenceChangeListener(this)
-        mWGestureApp = findPreference(KEY_W_GESTURE_APP) as AppSelectListPreference?
-        mWGestureApp!!.setEnabled(isGestureSupported(KEY_W_GESTURE_APP))
-        value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_5)
-        mWGestureApp!!.value = value
+        mapping = GestureSettings.DEVICE_GESTURE_MAPPING_4
+        value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        valueIndex = mSGestureApp!!.findIndexOfValue(value)
+        mSGestureApp!!.setValueIndex(valueIndex)
+        mSGestureApp!!.setSummary(mSGestureApp!!.getEntries().get(valueIndex))
+
+        mWGestureApp = findPreference(KEY_W_GESTURE_APP) as ListPreference?
         mWGestureApp!!.setOnPreferenceChangeListener(this)
-        mDownSwipeApp = findPreference(KEY_DOWN_SWIPE_APP) as AppSelectListPreference?
-        mDownSwipeApp!!.setEnabled(isGestureSupported(KEY_DOWN_SWIPE_APP))
-        value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_6)
-        mDownSwipeApp!!.value = value
+        mapping = GestureSettings.DEVICE_GESTURE_MAPPING_5
+        value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        valueIndex = mWGestureApp!!.findIndexOfValue(value)
+        mWGestureApp!!.setValueIndex(valueIndex)
+        mWGestureApp!!.setSummary(mWGestureApp!!.getEntries().get(valueIndex))
+
+        mDownSwipeApp = findPreference(KEY_DOWN_SWIPE_APP) as ListPreference?
         mDownSwipeApp!!.setOnPreferenceChangeListener(this)
-        mUpSwipeApp = findPreference(KEY_UP_SWIPE_APP) as AppSelectListPreference?
-        mUpSwipeApp!!.setEnabled(isGestureSupported(KEY_UP_SWIPE_APP))
-        value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_7)
-        mUpSwipeApp!!.value = value
+        mapping = GestureSettings.DEVICE_GESTURE_MAPPING_6
+        value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        valueIndex = mDownSwipeApp!!.findIndexOfValue(value)
+        mDownSwipeApp!!.setValueIndex(valueIndex)
+        mDownSwipeApp!!.setSummary(mDownSwipeApp!!.getEntries().get(valueIndex))
+
+        mUpSwipeApp = findPreference(KEY_UP_SWIPE_APP) as ListPreference?
         mUpSwipeApp!!.setOnPreferenceChangeListener(this)
-        mLeftSwipeApp = findPreference(KEY_LEFT_SWIPE_APP) as AppSelectListPreference?
-        mLeftSwipeApp!!.setEnabled(isGestureSupported(KEY_LEFT_SWIPE_APP))
-        value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_8)
-        mLeftSwipeApp!!.value = value
+        mapping = GestureSettings.DEVICE_GESTURE_MAPPING_7
+        value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        valueIndex = mUpSwipeApp!!.findIndexOfValue(value)
+        mUpSwipeApp!!.setValueIndex(valueIndex)
+        mUpSwipeApp!!.setSummary(mUpSwipeApp!!.getEntries().get(valueIndex))
+
+        mLeftSwipeApp = findPreference(KEY_LEFT_SWIPE_APP) as ListPreference?
         mLeftSwipeApp!!.setOnPreferenceChangeListener(this)
-        mRightSwipeApp = findPreference(KEY_RIGHT_SWIPE_APP) as AppSelectListPreference?
-        mRightSwipeApp!!.setEnabled(isGestureSupported(KEY_RIGHT_SWIPE_APP))
-        value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_9)
-        mRightSwipeApp!!.value = value
+        mapping = GestureSettings.DEVICE_GESTURE_MAPPING_8
+        value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        valueIndex = mLeftSwipeApp!!.findIndexOfValue(value)
+        mLeftSwipeApp!!.setValueIndex(valueIndex)
+        mLeftSwipeApp!!.setSummary(mLeftSwipeApp!!.getEntries().get(valueIndex))
+
+        mRightSwipeApp = findPreference(KEY_RIGHT_SWIPE_APP) as ListPreference?
         mRightSwipeApp!!.setOnPreferenceChangeListener(this)
-        FetchPackageInformationTask().execute()
+        mapping = GestureSettings.DEVICE_GESTURE_MAPPING_9
+        value = "disabled"
+        if (Settings.System.getString(context.getContentResolver(), mapping) !=null) {
+            value = Settings.System.getString(context.getContentResolver(), mapping)
+        }
+        valueIndex = mRightSwipeApp!!.findIndexOfValue(value)
+        mRightSwipeApp!!.setValueIndex(valueIndex)
+        mRightSwipeApp!!.setSummary(mRightSwipeApp!!.getEntries().get(valueIndex))
     }
 
     private fun areSystemNavigationKeysEnabled(): Boolean {
@@ -145,109 +178,78 @@ class GestureSettings : PreferenceFragment(), Preference.OnPreferenceChangeListe
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         if (preference === mCircleApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_CIRCLE_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_1, value)
+            var valueIndex: Int = mCircleApp!!.findIndexOfValue(value)
+            mCircleApp!!.setValueIndex(valueIndex)
+            mCircleApp!!.setSummary(mCircleApp!!.getEntries().get(valueIndex))
         } else if (preference === mDownArrowApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_DOWN_ARROW_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_2, value)
+            var valueIndex: Int = mDownArrowApp!!.findIndexOfValue(value)
+            mDownArrowApp!!.setValueIndex(valueIndex)
+            mDownArrowApp!!.setSummary(mDownArrowApp!!.getEntries().get(valueIndex))
         } else if (preference === mMGestureApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_M_GESTURE_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_3, value)
+            var valueIndex: Int = mMGestureApp!!.findIndexOfValue(value)
+            mMGestureApp!!.setValueIndex(valueIndex)
+            mMGestureApp!!.setSummary(mMGestureApp!!.getEntries().get(valueIndex))
         } else if (preference === mSGestureApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_S_GESTURE_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_4, value)
+            var valueIndex: Int = mSGestureApp!!.findIndexOfValue(value)
+            mSGestureApp!!.setValueIndex(valueIndex)
+            mSGestureApp!!.setSummary(mSGestureApp!!.getEntries().get(valueIndex))
         } else if (preference === mWGestureApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_W_GESTURE_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_5, value)
+            var valueIndex: Int = mWGestureApp!!.findIndexOfValue(value)
+            mWGestureApp!!.setValueIndex(valueIndex)
+            mWGestureApp!!.setSummary(mWGestureApp!!.getEntries().get(valueIndex))
         } else if (preference === mDownSwipeApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_DOWN_SWIPE_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_6, value)
+            var valueIndex: Int = mDownSwipeApp!!.findIndexOfValue(value)
+            mDownSwipeApp!!.setValueIndex(valueIndex)
+            mDownSwipeApp!!.setSummary(mDownSwipeApp!!.getEntries().get(valueIndex))
         } else if (preference === mUpSwipeApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_UP_SWIPE_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_7, value)
+            var valueIndex: Int = mUpSwipeApp!!.findIndexOfValue(value)
+            mUpSwipeApp!!.setValueIndex(valueIndex)
+            mUpSwipeApp!!.setSummary(mUpSwipeApp!!.getEntries().get(valueIndex))
         } else if (preference === mLeftSwipeApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_LEFT_SWIPE_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_8, value)
+            var valueIndex: Int = mLeftSwipeApp!!.findIndexOfValue(value)
+            mLeftSwipeApp!!.setValueIndex(valueIndex)
+            mLeftSwipeApp!!.setSummary(mLeftSwipeApp!!.getEntries().get(valueIndex))
         } else if (preference === mRightSwipeApp) {
             val value = newValue as String
-            val gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY)
+            val gestureDisabled = value.equals(DISABLED_ENTRY)
             setGestureEnabled(KEY_RIGHT_SWIPE_APP, !gestureDisabled)
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_9, value)
+            var valueIndex: Int = mRightSwipeApp!!.findIndexOfValue(value)
+            mRightSwipeApp!!.setValueIndex(valueIndex)
+            mRightSwipeApp!!.setSummary(mRightSwipeApp!!.getEntries().get(valueIndex))
         }
         return true
-    }
-
-    override fun onDisplayPreferenceDialog(preference: Preference) {
-        if (preference !is AppSelectListPreference) {
-            super.onDisplayPreferenceDialog(preference)
-            return
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (mFPDownSwipeApp != null) {
-            mFPDownSwipeApp.setEnabled(!areSystemNavigationKeysEnabled())
-        }
-        if (mFPUpSwipeApp != null) {
-            mFPUpSwipeApp.setEnabled(!areSystemNavigationKeysEnabled())
-        }
-    }
-
-    private fun loadInstalledPackages() {
-        val mainIntent = Intent(Intent.ACTION_MAIN, null)
-        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
-        val installedAppsInfo: List<ResolveInfo> = mPm!!.queryIntentActivities(mainIntent, 0)
-        for (info in installedAppsInfo) {
-            val activity: ActivityInfo = info.activityInfo
-            val appInfo: ApplicationInfo = activity.applicationInfo
-            val componentName = ComponentName(appInfo.packageName, activity.name)
-            var label: CharSequence? = null
-            try {
-                label = activity.loadLabel(mPm)
-            } catch (e: Exception) {
-            }
-            if (label != null) {
-                val item: AppSelectListPreference.PackageItem = AppSelectListPreference.PackageItem(activity.loadLabel(mPm), 0, componentName)
-                mInstalledPackages.add(item)
-            }
-        }
-        Collections.sort(mInstalledPackages)
-    }
-
-    private inner class FetchPackageInformationTask : AsyncTask<Void?, Void?, Void?>() {
-
-        override protected fun doInBackground(vararg params: Void?): Void? {
-            loadInstalledPackages()
-            return null
-        }
-
-        override protected fun onPostExecute(feed: Void?) {
-            mCircleApp!!.setPackageList(mInstalledPackages)
-            mDownArrowApp!!.setPackageList(mInstalledPackages)
-            mMGestureApp!!.setPackageList(mInstalledPackages)
-            mSGestureApp!!.setPackageList(mInstalledPackages)
-            mWGestureApp!!.setPackageList(mInstalledPackages)
-            mDownSwipeApp!!.setPackageList(mInstalledPackages)
-            mUpSwipeApp!!.setPackageList(mInstalledPackages)
-            mLeftSwipeApp!!.setPackageList(mInstalledPackages)
-            mRightSwipeApp!!.setPackageList(mInstalledPackages)
-        }
     }
 
     companion object {
@@ -277,6 +279,14 @@ class GestureSettings : PreferenceFragment(), Preference.OnPreferenceChangeListe
         const val DEVICE_GESTURE_MAPPING_7 = "device_gesture_mapping_7_0"
         const val DEVICE_GESTURE_MAPPING_8 = "device_gesture_mapping_8_0"
         const val DEVICE_GESTURE_MAPPING_9 = "device_gesture_mapping_9_0"
+        const val TORCH_ENTRY = "torch"
+        const val DISABLED_ENTRY = "disabled"
+        const val CAMERA_ENTRY = "camera"
+        const val MUSIC_PLAY_ENTRY = "music_play"
+        const val MUSIC_PREV_ENTRY = "music_prev"
+        const val MUSIC_NEXT_ENTRY = "music_next"
+        const val WAKE_ENTRY = "wake"
+        const val AMBIENT_DISPLAY_ENTRY = "ambient_display"
         fun getGestureFile(key: String?): String? {
             when (key) {
                 KEY_CIRCLE_APP -> return "/proc/touchpanel/letter_o_enable"

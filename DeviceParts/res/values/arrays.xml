@@ -34,4 +34,25 @@
         <item>5</item>
         <item>6</item>
     </string-array>
+
+    <string-array name="gestures_key_action_entries" translatable="false">
+        <item>@string/disabled_entry</item>
+        <item>@string/camera_entry</item>
+        <item>@string/torch_entry</item>
+        <item>@string/music_play_entry</item>
+        <item>@string/music_prev_entry</item>
+        <item>@string/music_next_entry</item>
+        <item>@string/ambient_display_entry</item>
+
+    </string-array>
+
+    <string-array name="gestures_key_action_values" translatable="false">
+        <item>disabled</item>
+        <item>camera</item>
+        <item>torch</item>
+        <item>music_play</item>
+        <item>music_prev</item>
+        <item>music_next</item>
+        <item>ambient_display</item>
+    </string-array>
 </resources>
