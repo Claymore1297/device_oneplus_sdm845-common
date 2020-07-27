@@ -30,13 +30,13 @@ abstract class VibratorStrengthPreference(context: Context, attrs: AttributeSet?
     private var mOldStrength = 0
     private val mMinValue = 116
     private val mMaxValue = 2088
-    private val mVibrator: Vibrator
+    private val mVibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        mOldStrength = getValue(getContext()).toInt()
+        mOldStrength = getValue(context).toInt()
         mSeekBar = holder.findViewById(R.id.seekbar) as SeekBar
-        mSeekBar!!.setMax(mMaxValue - mMinValue)
-        mSeekBar!!.setProgress(mOldStrength - mMinValue)
+        mSeekBar!!.max = mMaxValue - mMinValue
+        mSeekBar!!.progress = mOldStrength - mMinValue
         mSeekBar!!.setOnSeekBarChangeListener(this)
     }
 
@@ -66,7 +66,6 @@ abstract class VibratorStrengthPreference(context: Context, attrs: AttributeSet?
         // from drivers/platform/msm/qpnp-haptic.c
         // #define QPNP_HAP_VMAX_MIN_MV		116
         // #define QPNP_HAP_VMAX_MAX_MV		3596
-        mVibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        setLayoutResource(R.layout.preference_seek_bar)
+        layoutResource = R.layout.preference_seek_bar
     }
 }

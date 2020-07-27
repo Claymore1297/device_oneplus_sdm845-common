@@ -32,16 +32,16 @@ class BacklightDimmerPreference(context: Context?, attrs: AttributeSet?) : Prefe
     private val mMaxValue = 500
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        mOldStrength = getValue(getContext()).toInt()
+        mOldStrength = getValue(context).toInt()
         mSeekBar = holder.findViewById(R.id.seekbar) as SeekBar
-        mSeekBar!!.setMax(mMaxValue - mMinValue)
-        mSeekBar!!.setProgress(mOldStrength - mMinValue)
+        mSeekBar!!.max = mMaxValue - mMinValue
+        mSeekBar!!.progress = mOldStrength - mMinValue
         mSeekBar!!.setOnSeekBarChangeListener(this)
     }
 
     private fun setValue(newValue: String, withFeedback: Boolean) {
         Utils.writeValue(FILE_LEVEL, newValue)
-        Settings.System.putString(getContext().getContentResolver(), SETTINGS_KEY, newValue)
+        Settings.System.putString(context.contentResolver, SETTINGS_KEY, newValue)
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int,
@@ -77,16 +77,15 @@ class BacklightDimmerPreference(context: Context?, attrs: AttributeSet?) : Prefe
                 return
             }
             var storedValue: String = Settings.System.getString(context.getContentResolver(), SETTINGS_KEY)
-            if (DEBUG) Log.d(TAG, "restore value:$storedValue")
-            if (storedValue == null) {
-                storedValue = DEFAULT_VALUE
+            if (DEBUG) {
+                Log.d(TAG, "restore value:$storedValue")
+                Log.d(TAG, "restore file:$FILE_LEVEL")
             }
-            if (DEBUG) Log.d(TAG, "restore file:$FILE_LEVEL")
             Utils.writeValue(FILE_LEVEL, storedValue)
         }
     }
 
     init {
-        setLayoutResource(R.layout.preference_seek_bar)
+        layoutResource = R.layout.preference_seek_bar
     }
 }

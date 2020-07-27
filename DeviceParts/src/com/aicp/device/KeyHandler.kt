@@ -48,9 +48,10 @@ import com.android.internal.util.aicp.AicpUtils
 import com.android.internal.util.aicp.AicpVibe
 import com.android.internal.util.aicp.CustomKeyHandler
 import com.android.internal.util.aicp.PackageUtils
+import java.io.File
 
 class KeyHandler(context: Context) : CustomKeyHandler {
-    protected val mContext: Context
+    protected val mContext: Context = context
     private val mPowerManager: PowerManager
     private val mEventHandler: EventHandler
     private val mGestureWakeLock: WakeLock
@@ -63,13 +64,13 @@ class KeyHandler(context: Context) : CustomKeyHandler {
     private var mTorchState = false
     private val mSystemStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+            if (intent.action.equals(Intent.ACTION_SCREEN_ON)) {
                 mDispOn = true
                 onDisplayOn()
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+            } else if (intent.action.equals(Intent.ACTION_SCREEN_OFF)) {
                 mDispOn = false
                 onDisplayOff()
-            } else if (intent.getAction().equals(Intent.ACTION_USER_SWITCHED)) {
+            } else if (intent.action.equals(Intent.ACTION_USER_SWITCHED)) {
                 val userId: Int = intent.getIntExtra(Intent.EXTRA_USER_HANDLE, UserHandle.USER_NULL)
                 if (userId == UserHandle.USER_SYSTEM && mRestoreUser) {
                     if (DEBUG) Log.i(TAG, "ACTION_USER_SWITCHED to system")
@@ -82,8 +83,8 @@ class KeyHandler(context: Context) : CustomKeyHandler {
     }
 
     private fun hasSetupCompleted(): Boolean {
-        return Settings.Secure.getInt(mContext.getContentResolver(),
-                Settings.Secure.USER_SETUP_COMPLETE, 0) !== 0
+        return Settings.Secure.getInt(mContext.contentResolver,
+                Settings.Secure.USER_SETUP_COMPLETE, 0) != 0
     }
 
     private inner class EventHandler : Handler() {
@@ -91,7 +92,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
     }
 
     override fun handleKeyEvent(event: KeyEvent): Boolean {
-        if (event.getAction() !== KeyEvent.ACTION_UP) {
+        if (event.action != KeyEvent.ACTION_UP) {
             return false
         }
         return if (!hasSetupCompleted()) {
@@ -100,7 +101,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
     }
 
     override fun canHandleKeyEvent(event: KeyEvent): Boolean {
-        return ArrayUtils.contains(sSupportedGestures, event.getScanCode())
+        return ArrayUtils.contains(sSupportedGestures, event.scanCode)
     }
 
     override fun isDisabledKeyEvent(event: KeyEvent?): Boolean {
@@ -108,15 +109,15 @@ class KeyHandler(context: Context) : CustomKeyHandler {
     }
 
     override fun isCameraLaunchEvent(event: KeyEvent): Boolean {
-        if (event.getAction() !== KeyEvent.ACTION_UP) {
+        if (event.action != KeyEvent.ACTION_UP) {
             return false
         }
-        val value = getGestureValueForScanCode(event.getScanCode())
+        val value = getGestureValueForScanCode(event.scanCode)
         return !TextUtils.isEmpty(value) && value == GestureSettings.CAMERA_ENTRY
     }
 
     override fun isWakeEvent(event: KeyEvent): Boolean {
-        if (event.getAction() !== KeyEvent.ACTION_UP) {
+        if (event.action != KeyEvent.ACTION_UP) {
             return false
         }
         val value = getGestureValueForScanCode(event.getScanCode())
@@ -124,14 +125,14 @@ class KeyHandler(context: Context) : CustomKeyHandler {
             if (DEBUG) Log.i(TAG, "isWakeEvent " + event.getScanCode().toString() + value)
             return true
         }
-        return event.getScanCode() === KEY_DOUBLE_TAP
+        return event.scanCode == KEY_DOUBLE_TAP
     }
 
     override fun isActivityLaunchEvent(event: KeyEvent): Intent? {
-        if (event.getAction() !== KeyEvent.ACTION_UP) {
+        if (event.action != KeyEvent.ACTION_UP) {
             return null
         }
-        val value = getGestureValueForScanCode(event.getScanCode())
+        val value = getGestureValueForScanCode(event.scanCode)
         if (!TextUtils.isEmpty(value) && value != GestureSettings.DISABLED_ENTRY) {
             if (DEBUG) Log.i(TAG, "isActivityLaunchEvent " + event.getScanCode().toString() + value)
             if (!launchSpecialActions(value)) {
@@ -143,17 +144,14 @@ class KeyHandler(context: Context) : CustomKeyHandler {
     }
 
     private val audioService: IAudioService?
-        private get() {
+        get() {
             val audioService: IAudioService = IAudioService.Stub
                     .asInterface(ServiceManager.checkService(Context.AUDIO_SERVICE))
-            if (audioService == null) {
-                Log.w(TAG, "Unable to find IAudioService interface.")
-            }
             return audioService
         }
 
     val isMusicActive: Boolean
-        get() = mAudioManager.isMusicActive()
+        get() = mAudioManager.isMusicActive
 
     private fun dispatchMediaKeyWithWakeLockToAudioService(keycode: Int) {
         if (ActivityManagerNative.isSystemReady()) {
@@ -267,7 +265,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
         extras.putInt(EXTRA_SLIDER_POSITION_VALUE, position_value)
         intent.putExtras(extras)
         mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT)
-        intent.setFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY)
+        intent.flags = Intent.FLAG_RECEIVER_REGISTERED_ONLY
         Log.d(TAG, "slider change to positon " + position
                 + " with value " + position_value)
     }
@@ -276,16 +274,17 @@ class KeyHandler(context: Context) : CustomKeyHandler {
         val componentName: ComponentName = ComponentName.unflattenFromString(value)
         val intent = Intent(Intent.ACTION_MAIN)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK
                 or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-        intent.setComponent(componentName)
+        intent.component = componentName
         return intent
     }
 
     private fun launchSpecialActions(value: String?): Boolean {
-        val musicPlaybackEnabled = Settings.System.getIntForUser(mContext.getContentResolver(),
-                "Settings.System.$GESTURE_MUSIC_PLAYBACK_SETTINGS_VARIABLE_NAME", 0, UserHandle.USER_CURRENT) === 1
-        /* handle music playback gesture if enabled */if (musicPlaybackEnabled) {
+        val musicPlaybackEnabled = Settings.System.getIntForUser(mContext.contentResolver,
+                "Settings.System.$GESTURE_MUSIC_PLAYBACK_SETTINGS_VARIABLE_NAME", 0, UserHandle.USER_CURRENT) == 1
+        /* handle music playback gesture if enabled */
+        if (musicPlaybackEnabled) {
             when (value) {
                 GestureSettings.MUSIC_PLAY_ENTRY -> {
                     mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION)
@@ -314,14 +313,12 @@ class KeyHandler(context: Context) : CustomKeyHandler {
         if (value == GestureSettings.TORCH_ENTRY) {
             mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION)
             val service: IStatusBarService = statusBarService
-            if (service != null) {
-                try {
-                    service.toggleCameraFlash()
-                    AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
-                    return true
-                } catch (e: RemoteException) {
-                    // do nothing.
-                }
+            try {
+                service.toggleCameraFlash()
+                AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
+                return true
+            } catch (e: RemoteException) {
+                // do nothing.
             }
         } else if (value == GestureSettings.AMBIENT_DISPLAY_ENTRY) {
             AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
@@ -369,13 +366,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
         get() = IStatusBarService.Stub.asInterface(ServiceManager.getService("statusbar"))
 
     override fun getCustomProxiIsNear(event: SensorEvent): Boolean {
-        return event.values.get(0).toInt() === 1
-    }
-
-    private inner class ClientPackageNameObserver(file: String?) : FileObserver(CLIENT_PACKAGE_PATH, MODIFY) {
-        override fun onEvent(event: Int, file: String?) {
-            val pkgName = Utils.getFileValue(CLIENT_PACKAGE_PATH, "0")
-        }
+        return event.values[0].toInt() == 1
     }
 
     companion object {
@@ -465,7 +456,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
         private const val mButtonDisabled = false
         protected fun getSensor(sm: SensorManager, type: String): Sensor? {
             for (sensor in sm.getSensorList(Sensor.TYPE_ALL)) {
-                if (type == sensor.getStringType()) {
+                if (type == sensor.stringType) {
                     return sensor
                 }
             }
@@ -474,7 +465,6 @@ class KeyHandler(context: Context) : CustomKeyHandler {
     }
 
     init {
-        mContext = context
         mDispOn = true
         mEventHandler = EventHandler()
         mPowerManager = mContext.getSystemService(Context.POWER_SERVICE) as PowerManager

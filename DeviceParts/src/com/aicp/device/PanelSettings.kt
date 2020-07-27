@@ -34,13 +34,13 @@ class PanelSettings : PreferenceFragmentCompat(), RadioGroup.OnCheckedChangeList
         mRadioGroup = view.findViewById(R.id.radio_group) as RadioGroup
         var checkedButtonId: Int = R.id.off_mode
         when {
-            WideModeSwitch.isCurrentlyEnabled(context) -> {
+            WideModeSwitch.isCurrentlyEnabled() -> {
                 checkedButtonId = R.id.wide_mode
             }
-            DCIModeSwitch.isCurrentlyEnabled(context) -> {
+            DCIModeSwitch.isCurrentlyEnabled() -> {
                 checkedButtonId = R.id.dci_mode
             }
-            SRGBModeSwitch.isCurrentlyEnabled(context) -> {
+            SRGBModeSwitch.isCurrentlyEnabled() -> {
                 checkedButtonId = R.id.srgb_mode
             }
         }

@@ -131,7 +131,7 @@ object Utils {
             return null
         }
         var br: BufferedReader? = null
-        var line: String? = null
+        var line: String?
         try {
             br = BufferedReader(FileReader(filename), 1024)
             line = br.readLine()

@@ -38,15 +38,15 @@ class DeviceSettings : PreferenceFragment(), Preference.OnPreferenceChangeListen
         setPreferencesFromResource(R.xml.main, rootKey)
         mVibratorSystemStrength = findPreference(KEY_SYSTEM_VIBSTRENGTH) as VibratorSystemStrengthPreference?
         if (mVibratorSystemStrength != null) {
-            mVibratorSystemStrength?.setEnabled(VibratorSystemStrengthPreference.isSupported)
+            mVibratorSystemStrength?.isEnabled = VibratorSystemStrengthPreference.isSupported
         }
         mVibratorCallStrength = findPreference(KEY_CALL_VIBSTRENGTH) as VibratorCallStrengthPreference?
         if (mVibratorCallStrength != null) {
-            mVibratorCallStrength?.setEnabled(VibratorCallStrengthPreference.isSupported)
+            mVibratorCallStrength?.isEnabled = VibratorCallStrengthPreference.isSupported
         }
         mVibratorNotifStrength = findPreference(KEY_NOTIF_VIBSTRENGTH) as VibratorNotifStrengthPreference?
         if (mVibratorNotifStrength != null) {
-            mVibratorNotifStrength?.setEnabled(VibratorNotifStrengthPreference.isSupported)
+            mVibratorNotifStrength?.isEnabled = VibratorNotifStrengthPreference.isSupported
         }
         mSliderModeTop = findPreference(KEY_SLIDER_MODE_TOP) as ListPreference?
         mSliderModeTop!!.setOnPreferenceChangeListener(this)
@@ -66,13 +66,14 @@ class DeviceSettings : PreferenceFragment(), Preference.OnPreferenceChangeListen
         valueIndex = mSliderModeBottom!!.findIndexOfValue(sliderModeBottom.toString())
         mSliderModeBottom!!.setValueIndex(valueIndex)
         mSliderModeBottom!!.setSummary(mSliderModeBottom!!.getEntries().get(valueIndex))
+
         mHBMModeSwitch = findPreference(KEY_HBM_SWITCH) as TwoStatePreference?
         mHBMModeSwitch!!.setEnabled(HBMModeSwitch.isSupported)
-        mHBMModeSwitch!!.setChecked(HBMModeSwitch.isCurrentlyEnabled(this.getContext()))
+        mHBMModeSwitch!!.setChecked(HBMModeSwitch.isCurrentlyEnabled())
         mHBMModeSwitch!!.setOnPreferenceChangeListener(HBMModeSwitch(getContext()))
         mDCDModeSwitch = findPreference(KEY_DCD_SWITCH) as TwoStatePreference?
         mDCDModeSwitch!!.setEnabled(DCDModeSwitch.isSupported)
-        mDCDModeSwitch!!.setChecked(DCDModeSwitch.isCurrentlyEnabled(this.getContext()))
+        mDCDModeSwitch!!.setChecked(DCDModeSwitch.isCurrentlyEnabled())
         mDCDModeSwitch!!.setOnPreferenceChangeListener(DCDModeSwitch(getContext()))
     }
 
@@ -81,35 +82,40 @@ class DeviceSettings : PreferenceFragment(), Preference.OnPreferenceChangeListen
     }
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-        if (preference === mSliderModeTop) {
-            val value = newValue as String?
-            val sliderMode: Int = Integer.valueOf(value)
-            setSliderAction(0, sliderMode)
-            val valueIndex: Int = mSliderModeTop!!.findIndexOfValue(value)
-            mSliderModeTop!!.setSummary(mSliderModeTop!!.getEntries().get(valueIndex))
-        } else if (preference === mSliderModeCenter) {
-            val value = newValue as String?
-            val sliderMode: Int = Integer.valueOf(value)
-            setSliderAction(1, sliderMode)
-            val valueIndex: Int = mSliderModeCenter!!.findIndexOfValue(value)
-            mSliderModeCenter!!.setSummary(mSliderModeCenter!!.getEntries().get(valueIndex))
-        } else if (preference === mSliderModeBottom) {
-            val value = newValue as String?
-            val sliderMode: Int = Integer.valueOf(value)
-            setSliderAction(2, sliderMode)
-            val valueIndex: Int = mSliderModeBottom!!.findIndexOfValue(value)
-            mSliderModeBottom!!.setSummary(mSliderModeBottom!!.getEntries().get(valueIndex))
+        when {
+            preference === mSliderModeTop -> {
+                val value = newValue as String?
+                val sliderMode: Int = Integer.valueOf(value!!)
+                setSliderAction(0, sliderMode)
+                val valueIndex: Int = mSliderModeTop!!.findIndexOfValue(value)
+                mSliderModeTop!!.summary = mSliderModeTop!!.entries[valueIndex]
+            }
+            preference === mSliderModeCenter -> {
+                val value = newValue as String?
+                val sliderMode: Int = Integer.valueOf(value!!)
+                setSliderAction(1, sliderMode)
+                val valueIndex: Int = mSliderModeCenter!!.findIndexOfValue(value)
+                mSliderModeCenter!!.summary = mSliderModeCenter!!.entries[valueIndex]
+            }
+            preference === mSliderModeBottom -> {
+                val value = newValue as String?
+                val sliderMode: Int = Integer.valueOf(value!!)
+                setSliderAction(2, sliderMode)
+                val valueIndex: Int = mSliderModeBottom!!.findIndexOfValue(value)
+                mSliderModeBottom!!.summary = mSliderModeBottom!!.entries[valueIndex]
+            }
         }
         return true
     }
 
     private fun getSliderAction(position: Int): Int {
-        var value: String? = Settings.System.getString(getContext().getContentResolver(),
+        var value: String? = Settings.System.getString(
+            context?.contentResolver,
                 Settings.System.OMNI_BUTTON_EXTRA_KEY_MAPPING)
         val defaultValue = SLIDER_DEFAULT_VALUE
         if (value == null) {
             value = defaultValue
-        } else if (value.indexOf(",") === -1) {
+        } else if (value.indexOf(",") == -1) {
             value = defaultValue
         }
         try {
@@ -121,19 +127,21 @@ class DeviceSettings : PreferenceFragment(), Preference.OnPreferenceChangeListen
     }
 
     private fun setSliderAction(position: Int, action: Int) {
-        var value: String? = Settings.System.getString(getContext().getContentResolver(),
+        var value: String? = Settings.System.getString(
+            context?.contentResolver,
                 Settings.System.OMNI_BUTTON_EXTRA_KEY_MAPPING)
         val defaultValue = SLIDER_DEFAULT_VALUE
         if (value == null) {
             value = defaultValue
-        } else if (value.indexOf(",") === -1) {
+        } else if (value.indexOf(",") == -1) {
             value = defaultValue
         }
         try {
             val parts: MutableList<String> = value.split(",") as MutableList<String>
             parts[position] = action.toString()
             val newValue: String = TextUtils.join(",", parts)
-            Settings.System.putString(getContext().getContentResolver(),
+            Settings.System.putString(
+                context?.contentResolver,
                     Settings.System.OMNI_BUTTON_EXTRA_KEY_MAPPING, newValue)
         } catch (e: Exception) {
         }

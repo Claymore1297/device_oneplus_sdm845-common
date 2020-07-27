@@ -29,7 +29,7 @@ class HBMModeSwitch(context: Context) : OnPreferenceChangeListener {
     private val mHBMOnState: String
     override fun onPreferenceChange(preference: Preference?, newValue: Any): Boolean {
         val enabled = newValue as Boolean
-        Settings.System.putInt(mContext.getContentResolver(), SETTINGS_KEY, if (enabled) 1 else 0)
+        Settings.System.putInt(mContext.contentResolver, SETTINGS_KEY, if (enabled) 1 else 0)
         Utils.writeValue(file, if (enabled) mHBMOnState else mHBMOffState)
         return true
     }
@@ -47,7 +47,7 @@ class HBMModeSwitch(context: Context) : OnPreferenceChangeListener {
             get() = Utils.fileWritable(file)
 
         @JvmStatic
-        fun isCurrentlyEnabled(context: Context?): Boolean {
+        fun isCurrentlyEnabled(): Boolean {
             return Utils.getFileValueAsBoolean(file, false)
         }
     }

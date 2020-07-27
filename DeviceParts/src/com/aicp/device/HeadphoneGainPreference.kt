@@ -28,20 +28,21 @@ import androidx.preference.PreferenceViewHolder
 class HeadphoneGainPreference(context: Context?, attrs: AttributeSet?) : Preference(context, attrs), SeekBar.OnSeekBarChangeListener {
     private var mSeekBar: SeekBar? = null
     private var mOldStrength = 0
-    private val mMinValue: Int
-    private val mMaxValue: Int
+    // from techpack/audio/asoc/codecs/wcd934x/wcd934x.c
+    private val mMinValue: Int = -60
+    private val mMaxValue: Int = 20
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        mOldStrength = getValue(getContext()).toInt()
+        mOldStrength = getValue(context).toInt()
         mSeekBar = holder.findViewById(R.id.seekbar) as SeekBar
-        mSeekBar!!.setMax(mMaxValue - mMinValue)
-        mSeekBar!!.setProgress(mOldStrength - mMinValue)
+        mSeekBar!!.max = mMaxValue - mMinValue
+        mSeekBar!!.progress = mOldStrength - mMinValue
         mSeekBar!!.setOnSeekBarChangeListener(this)
     }
 
     private fun setValue(newValue: String) {
         Utils.writeValueDual(FILE_LEVEL, newValue)
-        Settings.System.putString(getContext().getContentResolver(), SETTINGS_KEY, newValue)
+        Settings.System.putString(context.contentResolver, SETTINGS_KEY, newValue)
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int,
@@ -76,20 +77,17 @@ class HeadphoneGainPreference(context: Context?, attrs: AttributeSet?) : Prefere
             if (!isSupported) {
                 return
             }
-            var storedValue: String = Settings.System.getString(context.getContentResolver(), SETTINGS_KEY)
-            if (DEBUG) Log.d(TAG, "restore value:$storedValue")
-            if (storedValue == null) {
-                storedValue = DEFAULT_VALUE
+            var storedValue: String = Settings.System.getString(context.contentResolver, SETTINGS_KEY)
+            if (DEBUG) {
+                Log.d(TAG, "restore value:$storedValue")
+                Log.d(TAG, "restore file:$FILE_LEVEL")
             }
-            if (DEBUG) Log.d(TAG, "restore file:$FILE_LEVEL")
             Utils.writeValueDual(FILE_LEVEL, storedValue)
         }
     }
 
     init {
         // from techpack/audio/asoc/codecs/wcd934x/wcd934x.c
-        mMinValue = -60
-        mMaxValue = 20
-        setLayoutResource(R.layout.preference_seek_bar)
+        layoutResource = R.layout.preference_seek_bar
     }
 }

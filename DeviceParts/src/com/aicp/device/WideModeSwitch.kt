@@ -29,7 +29,7 @@ class WideModeSwitch(context: Context) : OnPreferenceChangeListener {
     private val mContext: Context
     override fun onPreferenceChange(preference: Preference?, newValue: Any): Boolean {
         val enabled = newValue as Boolean
-        Settings.System.putInt(mContext.getContentResolver(), SETTINGS_KEY, if (enabled) 1 else 0)
+        Settings.System.putInt(mContext.contentResolver, SETTINGS_KEY, if (enabled) 1 else 0)
         writeValue(file, if (enabled) "1" else "0")
         return true
     }
@@ -47,7 +47,7 @@ class WideModeSwitch(context: Context) : OnPreferenceChangeListener {
             get() = fileWritable(file)
 
         @JvmStatic
-        fun isCurrentlyEnabled(context: Context?): Boolean {
+        fun isCurrentlyEnabled(): Boolean {
             return getFileValueAsBoolean(file, false)
         }
     }
