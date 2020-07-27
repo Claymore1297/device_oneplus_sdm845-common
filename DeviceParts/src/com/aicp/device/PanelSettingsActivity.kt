@@ -18,25 +18,24 @@
 */
 package com.aicp.device
 
-import android.app.Activity
-import android.app.Fragment
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 
-class PanelSettingsActivity : Activity() {
+class PanelSettingsActivity : FragmentActivity() {
     private var mPanelSettingsFragment: PanelSettings? = null
-    override protected fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getActionBar().setDisplayHomeAsUpEnabled(true)
-        val fragment: Fragment = getFragmentManager().findFragmentById(android.R.id.content)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
             mPanelSettingsFragment = PanelSettings()
-            getFragmentManager().beginTransaction()
-                    .add(android.R.id.content, mPanelSettingsFragment)
+            supportFragmentManager.beginTransaction()
+                    .add(android.R.id.content, mPanelSettingsFragment!!)
                     .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true

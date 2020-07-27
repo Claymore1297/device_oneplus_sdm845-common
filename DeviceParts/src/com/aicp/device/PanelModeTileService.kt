@@ -24,25 +24,6 @@ import android.service.quicksettings.TileService
 
 @TargetApi(24)
 class PanelModeTileService : TileService() {
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    override fun onTileAdded() {
-        super.onTileAdded()
-    }
-
-    override fun onTileRemoved() {
-        super.onTileRemoved()
-    }
-
-    override fun onStartListening() {
-        super.onStartListening()
-    }
-
-    override fun onStopListening() {
-        super.onStopListening()
-    }
 
     override fun onClick() {
         super.onClick()
