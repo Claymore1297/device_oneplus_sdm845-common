@@ -48,76 +48,47 @@ class Startup : BroadcastReceiver() {
                     "Settings.System." + KeyHandler.GESTURE_MUSIC_PLAYBACK_SETTINGS_VARIABLE_NAME, 0) == 1
             GestureSettings.setMusicPlaybackGestureEnabled(musicPlaybackEnabled)
 
-            var value = GestureSettings.DISABLED_ENTRY
-            // circle
-            var mapping: String = GestureSettings.DEVICE_GESTURE_MAPPING_1
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            var value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_1)?: GestureSettings.DISABLED_ENTRY
             var enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_CIRCLE_APP), enabled)
 
             // down arrow
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_2
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_2)?: GestureSettings.DISABLED_ENTRY
             enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_DOWN_ARROW_APP), enabled)
 
             // M Gesture
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_3
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_3)?: GestureSettings.DISABLED_ENTRY
             enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_M_GESTURE_APP), enabled)
 
             // S Gesture
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_4
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_4)?: GestureSettings.DISABLED_ENTRY
             enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_S_GESTURE_APP), enabled)
 
             // W Gesture
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_5
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_5)?: GestureSettings.DISABLED_ENTRY
             enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_W_GESTURE_APP), enabled)
 
             // down swipe
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_6
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_6)?: GestureSettings.DISABLED_ENTRY
             enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_DOWN_SWIPE_APP), enabled)
 
             // up swipe
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_7
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_7)?: GestureSettings.DISABLED_ENTRY
             enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_UP_SWIPE_APP), enabled)
 
             // left swipe
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_8
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_8)?: GestureSettings.DISABLED_ENTRY
             enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_LEFT_SWIPE_APP), enabled)
 
             // right swipe
-            mapping = GestureSettings.DEVICE_GESTURE_MAPPING_9
-            if (Settings.System.getString(context.contentResolver, mapping) !=null) {
-                value = Settings.System.getString(context.contentResolver, mapping)
-            }
+            value = Settings.System.getString(context.contentResolver, GestureSettings.DEVICE_GESTURE_MAPPING_9)?: GestureSettings.DISABLED_ENTRY
             enabled = !TextUtils.isEmpty(value) && !value.equals(GestureSettings.DISABLED_ENTRY)
             restore(getGestureFile(GestureSettings.KEY_RIGHT_SWIPE_APP), enabled)
 
