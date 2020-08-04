@@ -132,12 +132,16 @@ class KeyHandler(context: Context) : CustomKeyHandler {
         if (event.action != KeyEvent.ACTION_UP) {
             return null
         }
-        val value = getGestureValueForScanCode(event.scanCode)
-        if (!TextUtils.isEmpty(value) && value != GestureSettings.DISABLED_ENTRY) {
-            if (DEBUG) Log.i(TAG, "isActivityLaunchEvent " + event.scanCode.toString() + value)
-            if (!launchSpecialActions(value)) {
-                AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
-                return createIntent(value)
+        if (event.scanCode == KEY_DOUBLE_TAP) {
+            AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
+        } else {
+            val value = getGestureValueForScanCode(event.scanCode)
+            if (!TextUtils.isEmpty(value) && value != GestureSettings.DISABLED_ENTRY) {
+                if (DEBUG) Log.i(TAG, "isActivityLaunchEvent " + event.scanCode.toString() + value)
+                if (!launchSpecialActions(value)) {
+                    AicpVibe.performHapticFeedbackLw(HapticFeedbackConstants.LONG_PRESS, false, mContext, GESTURE_HAPTIC_SETTINGS_VARIABLE_NAME, GESTURE_HAPTIC_DURATION)
+                    return createIntent(value)
+                }
             }
         }
         return null
