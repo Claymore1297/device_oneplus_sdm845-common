@@ -184,8 +184,8 @@ PRODUCT_PACKAGES += \
     libnl \
     WifiOverlay
 
-PRODUCT_BOOT_JARS += \
-    WfdCommon
+#PRODUCT_BOOT_JARS += \
+#    WfdCommon
 
 #Build libjamesdsp
 PRODUCT_PACKAGES += \
