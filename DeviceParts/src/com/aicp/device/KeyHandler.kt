@@ -390,7 +390,7 @@ class KeyHandler(context: Context) : CustomKeyHandler {
         private const val GESTURE_M_SCANCODE = 247
         private const val GESTURE_S_SCANCODE = 248
         private const val GESTURE_CIRCLE_SCANCODE = 250
-        private const val GESTURE_V_SCANCODE = 252
+        private const val GESTURE_V_SCANCODE = 255
         private const val GESTURE_II_SCANCODE = 251
         private const val GESTURE_LEFT_V_SCANCODE = 253
         private const val GESTURE_RIGHT_V_SCANCODE = 254
